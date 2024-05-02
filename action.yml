@@ -1,0 +1,47 @@
+name: 'Create OTA Release'
+description: 'Creates OTA update releases'
+author: 'Ning Shang (Thistle Technologies)'
+inputs:
+  release_type:
+    description: 'Release type ("file", "zip_archive", or "rootfs")'
+    required: true
+    default: 'file'
+  persist_dir:
+    description: 'Path to the directory where the device can persist data'
+    required: true
+    default: ''
+  artifacts_dir:
+    description: 'Path to the directory where OTA update artifacts are stored'
+    required: false
+    default: ''
+  rootfs_img_path:
+    description: 'Path to the rootfs image file. Required only if release_type is "rootfs"'
+    required: false
+    default: ''
+  zip_archive_path:
+    description: 'Path to the zip archive file. Required only if release_type is "archive"'
+    required: false
+    default: ''
+  base_install_path_on_device:
+    description: 'Path to base directory on device file system where OTA update artifacts will be installed. Required if release_type is "file" or "archive"'
+    required: false
+    default: ''
+  project_access_token:
+    description: 'Project access token can be obtained from the project settings page in Thistle Control Center'
+    required: true
+    default: ''
+  signing_key_mangement:
+    description: 'Incidates how the signing key is managed ("local" or "remote")'
+    required: true
+    default: 'local'
+  signing_key:
+    description: 'Minisign signing key in Thistle format. Required only if signing_key_mangement is "local"'
+    required: false
+    default: ''
+  signing_key_password:
+    description: 'Password for the signing key. Required only if signing_key_mangement is "local" and the signing key is password protected'
+    required: false
+    default: ''
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
