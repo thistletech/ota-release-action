@@ -35,7 +35,7 @@ export THISTLE_KEY_PASS="${INPUT_SIGNING_KEY_PASSWORD}"
 export THISTLE_TOKEN="${INPUT_PROJECT_ACCESS_TOKEN}"
 
 download_trh() {
-  curl -A "curl (ota_release_action)" -L -o /tmp/trh.gz "${TRH_DOWNLOAD_URL}"
+  curl -A "curl (thistletech/ota-release-action)" -L -o /tmp/trh.gz "${TRH_DOWNLOAD_URL}"
   gunzip -c /tmp/trh.gz > "${TRH_BINARY_PATH}"
   chmod +x "${TRH_BINARY_PATH}"
   "${TRH_BINARY_PATH}" --version
