@@ -42,4 +42,4 @@ jobs:
           assignees: syncom
           reviewers: thistletech/engineering
           draft: false
-          base: ${{ github.sha }}
+          base: ${{ github.head_ref }}
