@@ -26,13 +26,13 @@ jobs:
         uses: peter-evans/create-pull-request@70a41aba780001da0a30141984ae2a0c95d8704e
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Update docs ($GITHUB_SHA)"
+          commit-message: "Update docs (${{ github.sha }})"
           committer: GitHub <noreply@github.com>
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           signoff: false
-          branch: "bot/update-docs-$GITHUB_SHA"
+          branch: "bot/update-docs-${{ github.sha }}"
           delete-branch: true
-          title: "Update docs ($GITHUB_SHA)"
+          title: "Update docs (${{ github.sha }})"
           body: |
             Auto-generated pull request to update README.md
           labels: |
@@ -42,4 +42,4 @@ jobs:
           assignees: syncom
           reviewers: thistletech/engineering
           draft: false
-          base: $GITHUB_HEAD_REF
+          base: ${{ github.sha }}
