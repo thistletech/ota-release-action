@@ -1,0 +1,45 @@
+name: 'Update README.md with action.yml'
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  update-readme:
+    runs-on: [ 'ubuntu-latest' ]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+
+      - name: 'run auto-doc'
+        uses: tj-actions/auto-doc@v3
+        with:
+          filename: 'action.yml'
+          output: 'README.md'
+
+      - name: 'Create pull request to update README.md'
+        id: cpr
+        # v6.0.2
+        uses: peter-evans/create-pull-request@70a41aba780001da0a30141984ae2a0c95d8704e
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update docs ($GITHUB_SHA)"
+          committer: GitHub <noreply@github.com>
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          signoff: false
+          branch: "bot/update-docs-$GITHUB_SHA"
+          delete-branch: true
+          title: "Update docs ($GITHUB_SHA)"
+          body: |
+            Auto-generated pull request to update README.md
+          labels: |
+            documentation
+            docs
+            automated pr
+          assignees: syncom
+          reviewers: thistletech/engineering
+          draft: false
+          base: $GITHUB_HEAD_REF
