@@ -30,8 +30,8 @@ inputs:
     description: 'Project access token can be obtained from the project settings page in Thistle Control Center'
     required: true
     default: ''
-  signing_key_mangement:
-    description: 'Incidates how the signing key is managed ("local" or "remote")'
+  signing_key_management:
+    description: 'Indicates how the signing key is managed ("local" or "remote")'
     required: true
     default: 'local'
   signing_key:
