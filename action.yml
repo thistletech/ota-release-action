@@ -35,11 +35,11 @@ inputs:
     required: true
     default: 'local'
   signing_key:
-    description: 'Minisign signing key in Thistle format. Required only if signing_key_mangement is "local"'
+    description: 'Minisign signing key in Thistle format. Required only if signing_key_management is "local"'
     required: false
     default: ''
   signing_key_password:
-    description: 'Password for the signing key. Required only if signing_key_mangement is "local" and the signing key is password protected'
+    description: 'Password for the signing key. Required only if signing_key_management is "local" and the signing key is password protected'
     required: false
     default: ''
 runs:
