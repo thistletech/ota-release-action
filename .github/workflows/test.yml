@@ -33,6 +33,6 @@ jobs:
           artifacts_dir: 'artifacts'
           base_install_path_on_device: '/tmp/ota'
           project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
-          signing_key_mangement: 'local'
+          signing_key_management: 'local'
           signing_key: ${{ secrets.TEST_SIGNING_KEY }}
           signing_key_password: ${{ secrets.TEST_SIGNING_KEY_PASSWORD }}
