@@ -34,6 +34,11 @@ export THISTLE_KEY="${HOME}/.minisign/minisign.key"
 export THISTLE_KEY_PASS="${INPUT_SIGNING_KEY_PASSWORD}"
 export THISTLE_TOKEN="${INPUT_PROJECT_ACCESS_TOKEN}"
 
+err() {
+  echo -e "$*"
+  exit 1
+}
+
 download_trh() {
   curl -A "curl (thistletech/ota-release-action)" -L -o /tmp/trh.gz "${TRH_DOWNLOAD_URL}"
   gunzip -c /tmp/trh.gz > "${TRH_BINARY_PATH}"
@@ -53,8 +58,8 @@ file_release() {
 
   local artifacts_dir="${INPUT_ARTIFACTS_DIR:-}"
   local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
-  [ -z "${artifacts_dir}" ] && { echo "No artifacts directory provided"; exit 1; }
-  [ -z "${base_install_path}" ] && { echo "No base install path provided"; exit 1; }
+  [ -z "${artifacts_dir}" ] && err "No artifacts directory provided"
+  [ -z "${base_install_path}" ] && err "No base install path provided"
 
   "${TRH_BINARY_PATH}" prepare --target="${artifacts_dir}" --file-base-path="${base_install_path}"
 
@@ -69,14 +74,18 @@ rootfs_release() {
 }
 
 zip_archive_release() {
-    echo "Not implemented"
-    exit 1
+  get_manifest_template_hack
+
+  local artifacts_dir="${INPUT_ARTIFACTS_DIR:-}"
+  local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
+  [ -z "${artifacts_dir}" ] && err "No artifacts directory provided"
+  [ -z "${base_install_path}" ] && err "No base install path provided"
 }
 
 do_it() {
 
   local release_type="${INPUT_RELEASE_TYPE:-}"
-  [ -z "${release_type}" ] && { echo "No release type provided"; exit 1; }
+  [ -z "${release_type}" ] && err "No release type provided"
 
   download_trh
 
@@ -91,8 +100,7 @@ do_it() {
       zip_archive_release
       ;;
     *)
-      echo "Unknown release type: ${INPUT_RELEASE_TYPE}"
-      exit 1
+      err "Unknown release type: ${INPUT_RELEASE_TYPE}"
       ;;
   esac
 }
