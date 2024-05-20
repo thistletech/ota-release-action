@@ -26,7 +26,7 @@ SCRIPT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 TRH_BINARY_PATH="${SCRIPT_DIR}/trh"
 readonly TRH_BINARY_PATH
-TRH_DOWNLOAD_URL="https://downloads.thistle.tech/embedded-client/1.0.0/trh-1.0.0-x86_64-unknown-linux-musl.gz"
+TRH_DOWNLOAD_URL="https://downloads.thistle.tech/embedded-client/1.0.1/trh-1.0.1-x86_64-unknown-linux-musl.gz"
 readonly TRH_DOWNLOAD_URL
 
 # Set environment variables
@@ -41,12 +41,15 @@ download_trh() {
   "${TRH_BINARY_PATH}" --version
 }
 
-file_release() {
+get_manifest_template_hack() {
   # Hack alert: Need to do this to get a manifest template
   mkdir -p "$(dirname "${THISTLE_KEY}")"
   echo "${INPUT_SIGNING_KEY}" > "${THISTLE_KEY}"
-  cat "${THISTLE_KEY}"
-  "${TRH_BINARY_PATH}" init --persist="${INPUT_PERSIST_DIR}"
+  "${TRH_BINARY_PATH}" init --persist="${INPUT_PERSIST_DIR}" > /dev/null
+}
+
+file_release() {
+  get_manifest_template_hack
 
   local artifacts_dir="${INPUT_ARTIFACTS_DIR:-}"
   local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
