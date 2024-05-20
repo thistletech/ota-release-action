@@ -18,8 +18,8 @@ inputs:
     description: 'Path to the rootfs image file. Required only if release_type is "rootfs"'
     required: false
     default: ''
-  zip_archive_path:
-    description: 'Path to the zip archive file. Required only if release_type is "zip_archive"'
+  zip_archive_dir:
+    description: 'Path to the directory whose content will be zipped before releasing. Required only if release_type is "zip_archive"'
     required: false
     default: ''
   base_install_path_on_device:

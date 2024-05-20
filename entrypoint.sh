@@ -12,7 +12,7 @@
 # INPUT_PERSIST_DIR
 # INPUT_ARTIFACTS_DIR
 # INPUT_ROOTFS_IMG_PATH
-# INPUT_ZIP_ARCHIVE_PATH
+# INPUT_ZIP_ARCHIVE_DIR
 # INPUT_BASE_INSTALL_PATH_ON_DEVICE
 # INPUT_PROJECT_ACCESS_TOKEN
 # INPUT_SIGNING_KEY_MANAGEMENT
@@ -76,10 +76,14 @@ rootfs_release() {
 zip_archive_release() {
   get_manifest_template_hack
 
-  local artifacts_dir="${INPUT_ARTIFACTS_DIR:-}"
+  local zip_archive_dir="${INPUT_ZIP_ARCHIVE_DIR:-}"
   local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
-  [ -z "${artifacts_dir}" ] && err "No artifacts directory provided"
+  [ -z "${zip_archive_dir}" ] && err "No zip archive directory provided"
   [ -z "${base_install_path}" ] && err "No base install path provided"
+
+  "${TRH_BINARY_PATH}" prepare --zip-target --target="${zip_archive_dir}" --file-base-path="${base_install_path}"
+
+  "${TRH_BINARY_PATH}" release
 }
 
 do_it() {
