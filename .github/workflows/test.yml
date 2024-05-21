@@ -39,6 +39,7 @@ jobs:
 
   test_ota_release_zip_archive:
     name: 'Test OTA Release Action (release_type: zip_archive)'
+    needs: 'test_ota_release_file'
     runs-on: 'ubuntu-latest'
     steps:
       - name: 'Checkout'
