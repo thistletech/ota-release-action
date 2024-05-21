@@ -42,6 +42,7 @@ jobs:
         run: |
           ...
           [build artifacts from source]
+          [run tests on artifacts]
           ...
           rm -rf artifacts
           mkdir -p artifacts
@@ -50,7 +51,7 @@ jobs:
           ...
 
       - name: 'OTA Release'
-        uses: 'thistletech/ota-release-action@v1'
+        uses: 'thistletech/ota-release-action@v1.0.1'
         with:
           release_type: 'file'
           persist_dir: '/tmp/persist'
