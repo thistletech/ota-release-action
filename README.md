@@ -53,7 +53,7 @@ jobs:
           ...
 
       - name: 'OTA Release'
-        uses: 'thistletech/ota-release-action@v1.0.1'
+        uses: 'thistletech/ota-release-action@v1.0.2'
         with:
           release_name: 'OPTIONAL RELEASE NAME'
           release_type: 'file'
@@ -71,7 +71,7 @@ the "OTA Release" step as
 
 ```yaml
       - name: 'OTA Release'
-        uses: 'thistletech/ota-release-action@v1.0.1'
+        uses: 'thistletech/ota-release-action@v1.0.2'
         with:
           release_name: 'OPTIONAL RELEASE NAME'
           release_type: 'rootfs'
@@ -87,7 +87,7 @@ For zip archive update, configure the "OTA Release" step as
 
 ```yaml
       - name: 'OTA Release'
-        uses: 'thistletech/ota-release-action@v1.0.1'
+        uses: 'thistletech/ota-release-action@v1.0.2'
         with:
           release_name: 'OPTIONAL RELEASE NAME'
           release_type: 'zip_archive'
