@@ -28,6 +28,7 @@ jobs:
       - name: 'Test OTA Release'
         uses: './' # Use an action in the root directory
         with:
+          # Not setting release_name to test the default behavior
           release_type: 'file'
           persist_dir: '/tmp/persist'
           artifacts_dir: 'artifacts'
