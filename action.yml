@@ -18,12 +18,12 @@ inputs:
     description: 'Path to the rootfs image file. Required only if release_type is "rootfs"'
     required: false
     default: ''
-  zip_archive_path:
-    description: 'Path to the zip archive file. Required only if release_type is "archive"'
+  zip_archive_dir:
+    description: 'Path to the directory whose content will be zipped before releasing. Required only if release_type is "zip_archive"'
     required: false
     default: ''
   base_install_path_on_device:
-    description: 'Path to base directory on device file system where OTA update artifacts will be installed. Required if release_type is "file" or "archive"'
+    description: 'Path to base directory on device file system where OTA update artifacts will be installed. Required if release_type is "file" or "zip_archive"'
     required: false
     default: ''
   project_access_token:
