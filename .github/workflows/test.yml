@@ -28,6 +28,7 @@ jobs:
       - name: 'Test OTA Release'
         uses: './' # Use an action in the root directory
         with:
+          # Not setting release_name to test the default behavior
           release_type: 'file'
           persist_dir: '/tmp/persist'
           artifacts_dir: 'artifacts'
@@ -44,6 +45,10 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: 'actions/checkout@v4'
+
+      - name: 'Set up environment'
+        run: |
+          echo "TIMESTAMP=$(date +'%Y-%m-%dT%H:%M:%S%z')" >> $GITHUB_ENV
     
       - name: 'Create artifacts for test'
         run: |
@@ -57,6 +62,7 @@ jobs:
       - name: 'Test OTA Release'
         uses: './' # Use an action in the root directory
         with:
+          release_name: 'archive-release ${{ env.TIMESTAMP }}'
           release_type: 'zip_archive'
           persist_dir: '/tmp/persist'
           zip_archive_dir: 'artifacts'

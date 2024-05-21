@@ -8,6 +8,7 @@
 # The following environment variables correspond to the input identifiers in
 # action.yml.
 #
+# INPUT_RELEASE_NAME
 # INPUT_RELEASE_TYPE
 # INPUT_PERSIST_DIR
 # INPUT_ARTIFACTS_DIR
@@ -56,14 +57,21 @@ get_manifest_template_hack() {
 file_release() {
   get_manifest_template_hack
 
+  local release_name="${INPUT_RELEASE_NAME:-}"
+
   local artifacts_dir="${INPUT_ARTIFACTS_DIR:-}"
-  local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
   [ -z "${artifacts_dir}" ] && err "No artifacts directory provided"
+
+  local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
   [ -z "${base_install_path}" ] && err "No base install path provided"
 
   "${TRH_BINARY_PATH}" prepare --target="${artifacts_dir}" --file-base-path="${base_install_path}"
 
-  "${TRH_BINARY_PATH}" release
+  if [ -n "${release_name}" ]; then
+    "${TRH_BINARY_PATH}" release --name="${release_name}"
+  else
+    "${TRH_BINARY_PATH}" release
+  fi 
 
   echo "done"
 }
@@ -76,14 +84,23 @@ rootfs_release() {
 zip_archive_release() {
   get_manifest_template_hack
 
+  local release_name="${INPUT_RELEASE_NAME:-}"
+
   local zip_archive_dir="${INPUT_ZIP_ARCHIVE_DIR:-}"
-  local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
   [ -z "${zip_archive_dir}" ] && err "No zip archive directory provided"
+
+  local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
   [ -z "${base_install_path}" ] && err "No base install path provided"
 
   "${TRH_BINARY_PATH}" prepare --zip-target --target="${zip_archive_dir}" --file-base-path="${base_install_path}"
 
-  "${TRH_BINARY_PATH}" release
+  if [ -n "${release_name}" ]; then
+    "${TRH_BINARY_PATH}" release --name="${release_name}"
+  else
+    "${TRH_BINARY_PATH}" release
+  fi 
+
+  echo "done"
 }
 
 do_it() {
