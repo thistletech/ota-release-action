@@ -2,6 +2,9 @@ name: 'Create OTA Release'
 description: 'Creates OTA update releases'
 author: 'Ning Shang (Thistle Technologies)'
 inputs:
+  release_name:
+    description: 'Display name of the release. If not provided or empty, the unique manifest ID will be used'
+    required: false
   release_type:
     description: 'Release type ("file", "zip_archive", or "rootfs")'
     required: true
