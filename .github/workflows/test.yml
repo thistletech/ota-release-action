@@ -71,3 +71,32 @@ jobs:
           signing_key_management: 'local'
           signing_key: ${{ secrets.TEST_SIGNING_KEY }}
           signing_key_password: ${{ secrets.TEST_SIGNING_KEY_PASSWORD }}
+
+  test_ota_release_rootfs:
+    name: 'Test OTA Release Action (release_type: rootfs)'
+    needs: 'test_ota_release_zip_archive'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Set up environment'
+        run: |
+          echo "TIMESTAMP=$(date +'%Y-%m-%dT%H:%M:%S%z')" >> $GITHUB_ENV
+
+      - name: 'Create (bogus) rootfs for test'
+        run: |
+          echo "Create fake rootfs at ${{ env.TIMESTAMP }}" > rootfs.img
+
+      - name: 'Test OTA Release'
+        uses: './' # Use an action in the root directory
+        with:
+          release_name: 'rootfs-release ${{ env.TIMESTAMP }}'
+          release_type: 'rootfs'
+          persist_dir: '/tmp/persist'
+          rootfs_img_path: 'rootfs.img'
+          base_install_path_on_device: '/boot'
+          project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
+          signing_key_management: 'local'
+          signing_key: ${{ secrets.TEST_SIGNING_KEY }}
+          signing_key_password: ${{ secrets.TEST_SIGNING_KEY_PASSWORD }}

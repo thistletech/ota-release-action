@@ -77,8 +77,22 @@ file_release() {
 }
 
 rootfs_release() {
-    echo "Not implemented"
-    exit 1
+  get_manifest_template_hack
+
+  local release_name="${INPUT_RELEASE_NAME:-}"
+
+  local rootfs_img_path="${INPUT_ROOTFS_IMG_PATH:-}"
+  [ -z "${rootfs_img_path}" ] && err "No rootfs image path provided"
+
+  "${TRH_BINARY_PATH}" prepare --target="${rootfs_img_path}"
+
+  if [ -n "${release_name}" ]; then
+    "${TRH_BINARY_PATH}" release --name="${release_name}"
+  else
+    "${TRH_BINARY_PATH}" release
+  fi
+
+  echo "done"
 }
 
 zip_archive_release() {
@@ -98,7 +112,7 @@ zip_archive_release() {
     "${TRH_BINARY_PATH}" release --name="${release_name}"
   else
     "${TRH_BINARY_PATH}" release
-  fi 
+  fi
 
   echo "done"
 }
