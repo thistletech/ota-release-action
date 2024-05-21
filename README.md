@@ -17,9 +17,11 @@ step](https://docs.thistle.tech/update/get_started/file_update#configuration) to
 create a password-protected [Minisign](https://jedisct1.github.io/minisign/)
 private key with the `trh init` command.
 
-An example workflow is as follows. Confidential information, such as the
-aforementioned project access token, private signing key, and signing key
-password are saved as GitHub repository secrets.
+An example workflow for [file
+update](https://docs.thistle.tech/update/get_started/file_update) is as follows.
+Confidential information, such as the aforementioned project access token,
+private signing key, and signing key password are saved as GitHub repository
+secrets.
 
 ```yaml
 name: 'OTA Release'
@@ -53,9 +55,44 @@ jobs:
       - name: 'OTA Release'
         uses: 'thistletech/ota-release-action@v1.0.1'
         with:
+          release_name: 'OPTIONAL RELEASE NAME'
           release_type: 'file'
           persist_dir: '/tmp/persist'
           artifacts_dir: 'artifacts'
+          base_install_path_on_device: '/tmp/ota'
+          project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
+          signing_key_management: 'local'
+          signing_key: ${{ secrets.SIGNING_KEY }}
+          signing_key_password: ${{ secrets.SIGNING_KEY_PASSWORD }}
+```
+
+For [rootfs update](https://docs.thistle.tech/update/get_started/rpi), configure
+the "OTA Release" step as
+
+```yaml
+      - name: 'OTA Release'
+        uses: 'thistletech/ota-release-action@v1.0.1'
+        with:
+          release_name: 'OPTIONAL RELEASE NAME'
+          release_type: 'rootfs'
+          persist_dir: '/tmp/persist'
+          rootfs_img_path: '/path/to/rootfs.img'
+          project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
+          signing_key_management: 'local'
+          signing_key: ${{ secrets.SIGNING_KEY }}
+          signing_key_password: ${{ secrets.SIGNING_KEY_PASSWORD }}
+```
+
+For zip archive update, configure the "OTA Release" step as
+
+```yaml
+      - name: 'OTA Release'
+        uses: 'thistletech/ota-release-action@v1.0.1'
+        with:
+          release_name: 'OPTIONAL RELEASE NAME'
+          release_type: 'zip_archive'
+          persist_dir: '/tmp/persist'
+          zip_archive_dir: '/path/to/uncompressed_artifacts_dir'
           base_install_path_on_device: '/tmp/ota'
           project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'

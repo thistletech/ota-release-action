@@ -95,7 +95,6 @@ jobs:
           release_type: 'rootfs'
           persist_dir: '/tmp/persist'
           rootfs_img_path: 'rootfs.img'
-          base_install_path_on_device: '/boot'
           project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'
           signing_key: ${{ secrets.TEST_SIGNING_KEY }}
