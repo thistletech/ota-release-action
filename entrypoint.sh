@@ -10,7 +10,7 @@
 #
 # INPUT_RELEASE_NAME
 # INPUT_RELEASE_TYPE
-# INPUT_PERSIST_DIR
+# INPUT_PERSIST_DIR_ON_DEVICE
 # INPUT_ARTIFACTS_DIR
 # INPUT_ROOTFS_IMG_PATH
 # INPUT_ZIP_ARCHIVE_DIR
@@ -49,9 +49,12 @@ download_trh() {
 
 get_manifest_template_hack() {
   # Hack alert: Need to do this to get a manifest template
+  local persist_dir="${INPUT_PERSIST_DIR_ON_DEVICE:-}"
+  [ -z "${persist_dir}" ] && err "No persist directory provided"
+
   mkdir -p "$(dirname "${THISTLE_KEY}")"
   echo "${INPUT_SIGNING_KEY}" > "${THISTLE_KEY}"
-  "${TRH_BINARY_PATH}" init --persist="${INPUT_PERSIST_DIR}" > /dev/null
+  "${TRH_BINARY_PATH}" init --persist="${persist_dir}" > /dev/null
 }
 
 file_release() {

@@ -9,7 +9,7 @@ inputs:
     description: 'Release type ("file", "zip_archive", or "rootfs")'
     required: true
     default: 'file'
-  persist_dir:
+  persist_dir_on_device:
     description: 'Path to the directory where the device can persist data'
     required: true
     default: ''
