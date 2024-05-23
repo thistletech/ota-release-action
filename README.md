@@ -57,8 +57,8 @@ jobs:
         with:
           release_name: 'OPTIONAL RELEASE NAME'
           release_type: 'file'
-          persist_dir: '/tmp/persist'
           artifacts_dir: 'artifacts'
+          persist_dir_on_device: '/tmp/persist'
           base_install_path_on_device: '/tmp/ota'
           project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'
@@ -75,8 +75,8 @@ the "OTA Release" step as
         with:
           release_name: 'OPTIONAL RELEASE NAME'
           release_type: 'rootfs'
-          persist_dir: '/tmp/persist'
           rootfs_img_path: '/path/to/rootfs.img'
+          persist_dir_on_device: '/tmp/persist'
           project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'
           signing_key: ${{ secrets.SIGNING_KEY }}
@@ -91,8 +91,8 @@ For zip archive update, configure the "OTA Release" step as
         with:
           release_name: 'OPTIONAL RELEASE NAME'
           release_type: 'zip_archive'
-          persist_dir: '/tmp/persist'
           zip_archive_dir: '/path/to/uncompressed_artifacts_dir'
+          persist_dir_on_device: '/tmp/persist'
           base_install_path_on_device: '/tmp/ota'
           project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'
