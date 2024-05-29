@@ -11,11 +11,10 @@ Update Client (TUC)](https://docs.thistle.tech/update/cli#update-client-usage).
 To use this action, one needs to create an account in the [Thistle Control
 Center](https://app.thistle.tech), and obtain the API token ("Project Access
 Token"). In case a locally managed OTA update signing key is used (which is the
-only supported option currently), one also needs to go through the
-[Configuration
-step](https://docs.thistle.tech/update/get_started/file_update#configuration) to
-create a password-protected [Minisign](https://jedisct1.github.io/minisign/)
-private key with the `trh init` command.
+only supported option currently), one needs run the `trh keygen` (requiring
+[TRH](https://docs.thistle.tech/download#thistle-update-client-tuc-and-release-helper-trh)
+v1.1.0 or above) command to create a password-protected
+[Minisign](https://jedisct1.github.io/minisign/) private key.
 
 An example workflow for [file
 update](https://docs.thistle.tech/update/get_started/file_update) is as follows.
