@@ -45,6 +45,10 @@ inputs:
     description: 'Password for the signing key. Required only if signing_key_management is "local" and the signing key is password protected'
     required: false
     default: ''
+  backend_url:
+    description: 'URL of the backend server that runs the OTA update service. If not provided, the Thistle service will be used'
+    required: false
+    default: ''
 runs:
   using: 'docker'
   image: 'Dockerfile'
