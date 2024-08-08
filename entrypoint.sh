@@ -87,10 +87,10 @@ file_release() {
   local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
   [ -z "${base_install_path}" ] && err "No base install path provided"
 
-  eval "${TRH_COMMAND}" prepare --target="${artifacts_dir}" --file-base-path="${base_install_path}"
+  eval "${TRH_COMMAND}" prepare --target="\"${artifacts_dir}\"" --file-base-path="\"${base_install_path}\""
 
   if [ -n "${release_name}" ]; then
-    eval "${TRH_COMMAND}" release --name="${release_name}"
+    eval "${TRH_COMMAND}" release --name="\"${release_name}\""
   else
     eval "${TRH_COMMAND}" release
   fi 
@@ -106,10 +106,10 @@ rootfs_release() {
   local rootfs_img_path="${INPUT_ROOTFS_IMG_PATH:-}"
   [ -z "${rootfs_img_path}" ] && err "No rootfs image path provided"
 
-  eval "${TRH_COMMAND}" prepare --target="${rootfs_img_path}"
+  eval "${TRH_COMMAND}" prepare --target="\"${rootfs_img_path}\""
 
   if [ -n "${release_name}" ]; then
-    eval "${TRH_COMMAND}" release --name="${release_name}"
+    eval "${TRH_COMMAND}" release --name="\"${release_name}\""
   else
     eval "${TRH_COMMAND}" release
   fi
@@ -128,10 +128,10 @@ zip_archive_release() {
   local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
   [ -z "${base_install_path}" ] && err "No base install path provided"
 
-  eval "${TRH_COMMAND}" prepare --zip-target --target="${zip_archive_dir}" --file-base-path="${base_install_path}"
+  eval "${TRH_COMMAND}" prepare --zip-target --target="\"${zip_archive_dir}\"" --file-base-path="\"${base_install_path}\""
 
   if [ -n "${release_name}" ]; then
-    eval "${TRH_COMMAND}" release --name="${release_name}"
+    eval "${TRH_COMMAND}" release --name="\"${release_name}\""
   else
     eval "${TRH_COMMAND}" release
   fi
