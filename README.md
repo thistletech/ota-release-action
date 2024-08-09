@@ -10,11 +10,16 @@ Update Client (TUC)](https://docs.thistle.tech/update/cli#update-client-usage).
 
 To use this action, one needs to create an account in the [Thistle Control
 Center](https://app.thistle.tech), and obtain the API token ("Project Access
-Token"). In case a locally managed OTA update signing key is used (which is the
-only supported option currently), one needs run the `trh keygen` (requiring
+Token"). In case a locally managed OTA update signing key is used, one needs run
+the `trh keygen` (requiring
 [TRH](https://docs.thistle.tech/download#thistle-update-client-tuc-and-release-helper-trh)
 v1.1.0 or above) command to create a password-protected
-[Minisign](https://jedisct1.github.io/minisign/) private key.
+[Minisign](https://jedisct1.github.io/minisign/) private key. For remote signing
+(with Thistle-managed Cloud KMS-backed keys, supported in version 1.4.0 and
+above), the keygen step isn't needed.
+
+
+### Signing OTA bundle with a locally managed signing key
 
 An example workflow for [file
 update](https://docs.thistle.tech/update/get_started/file_update) is as follows.
@@ -57,8 +62,8 @@ jobs:
           release_name: 'OPTIONAL RELEASE NAME'
           release_type: 'file'
           artifacts_dir: 'artifacts'
-          persist_dir_on_device: '/tmp/persist'
-          base_install_path_on_device: '/tmp/ota'
+          persist_dir_on_device: '/ota/persist'
+          base_install_path_on_device: '/ota/bin'
           project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'
           signing_key: ${{ secrets.SIGNING_KEY }}
@@ -75,7 +80,7 @@ the "OTA Release" step as
           release_name: 'OPTIONAL RELEASE NAME'
           release_type: 'rootfs'
           rootfs_img_path: '/path/to/rootfs.img'
-          persist_dir_on_device: '/tmp/persist'
+          persist_dir_on_device: '/ota/persist'
           project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'
           signing_key: ${{ secrets.SIGNING_KEY }}
@@ -91,12 +96,88 @@ For zip archive update, configure the "OTA Release" step as
           release_name: 'OPTIONAL RELEASE NAME'
           release_type: 'zip_archive'
           zip_archive_dir: '/path/to/uncompressed_artifacts_dir'
-          persist_dir_on_device: '/tmp/persist'
-          base_install_path_on_device: '/tmp/ota'
+          persist_dir_on_device: '/ota/persist'
+          base_install_path_on_device: '/ota/bin'
           project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'
           signing_key: ${{ secrets.SIGNING_KEY }}
           signing_key_password: ${{ secrets.SIGNING_KEY_PASSWORD }}
+```
+
+### Signing OTA bundle with a remotely managed signing key
+
+For [file update](https://docs.thistle.tech/update/get_started/file_update), an
+example workflow is as follows.
+
+```yaml
+name: 'OTA Release'
+
+on:
+  push:
+    tags:
+      # Trigger release by tagging
+      - 'release-v*'
+
+jobs:
+  ota_release:
+    name: 'OTA Release'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout source'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Create artifacts for OTA release'
+        run: |
+          ...
+          [build artifacts from source]
+          [run tests on artifacts]
+          ...
+          rm -rf artifacts
+          mkdir -p artifacts
+          ...
+          [copy built artifacts to directory artifacts/]
+          ...
+
+      - name: 'OTA Release'
+        uses: 'thistletech/ota-release-action@v1'
+        with:
+          release_name: 'OPTIONAL RELEASE NAME'
+          release_type: 'file'
+          artifacts_dir: 'artifacts'
+          persist_dir_on_device: '/ota/persist'
+          base_install_path_on_device: '/ota/bin'
+          project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
+          signing_key_management: 'remote'
+```
+
+For [rootfs update](https://docs.thistle.tech/update/get_started/rpi), configure
+the "OTA Release" step as
+
+```yaml
+      - name: 'OTA Release'
+        uses: 'thistletech/ota-release-action@v1'
+        with:
+          release_name: 'OPTIONAL RELEASE NAME'
+          release_type: 'rootfs'
+          rootfs_img_path: '/path/to/rootfs.img'
+          persist_dir_on_device: '/ota/persist'
+          project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
+          signing_key_management: 'remote'
+```
+
+For zip archive update, configure the "OTA Release" step as
+
+```yaml
+      - name: 'OTA Release'
+        uses: 'thistletech/ota-release-action@v1'
+        with:
+          release_name: 'OPTIONAL RELEASE NAME'
+          release_type: 'zip_archive'
+          zip_archive_dir: '/path/to/uncompressed_artifacts_dir'
+          persist_dir_on_device: '/ota/persist'
+          base_install_path_on_device: '/ota/bin'
+          project_access_token: ${{ secrets.PROJECT_ACCESS_TOKEN }}
+          signing_key_management: 'remote'
 ```
 
 ## Inputs
