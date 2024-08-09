@@ -10,12 +10,12 @@ on:
 
 jobs:
   test_ota_release_file:
-    name: 'Test OTA Release Action (release_type: file)'
+    name: 'Test OTA Release Action (release_type: file, signing_key_management: local)'
     runs-on: 'ubuntu-latest'
     steps:
       - name: 'Checkout'
         uses: 'actions/checkout@v4'
-    
+
       - name: 'Create artifacts for test'
         run: |
           mkdir -p artifacts
@@ -38,9 +38,37 @@ jobs:
           signing_key: ${{ secrets.TEST_SIGNING_KEY }}
           signing_key_password: ${{ secrets.TEST_SIGNING_KEY_PASSWORD }}
 
-  test_ota_release_zip_archive:
-    name: 'Test OTA Release Action (release_type: zip_archive)'
+  test_ota_release_file_remote_signing:
     needs: 'test_ota_release_file'
+    name: 'Test OTA Release Action (release_type: file, signing_key_management: remote)'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Create artifacts for test'
+        run: |
+          mkdir -p artifacts
+          hello_time="$(date +'%Y-%m-%dT%H:%M:%S%z')"
+          echo "${hello_time}: Hello, World!" > artifacts/hello.txt
+          sleep 4.2
+          goodbye_time="$(date +'%Y-%m-%dT%H:%M:%S%z')"
+          echo "${goodbye_time}: Goodbye, World!" > artifacts/goodbye.txt
+
+      - name: 'Test OTA Release'
+        uses: './' # Use an action in the root directory
+        with:
+          # Not setting release_name to test the default behavior
+          release_type: 'file'
+          artifacts_dir: 'artifacts'
+          persist_dir_on_device: '/tmp/persist'
+          base_install_path_on_device: '/tmp/ota'
+          project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
+          signing_key_management: 'remote'
+
+  test_ota_release_zip_archive:
+    needs: 'test_ota_release_file_remote_signing'
+    name: 'Test OTA Release Action (release_type: zip_archive, signing_key_management: local)'
     runs-on: 'ubuntu-latest'
     steps:
       - name: 'Checkout'
@@ -72,9 +100,41 @@ jobs:
           signing_key: ${{ secrets.TEST_SIGNING_KEY }}
           signing_key_password: ${{ secrets.TEST_SIGNING_KEY_PASSWORD }}
 
-  test_ota_release_rootfs:
-    name: 'Test OTA Release Action (release_type: rootfs)'
+  test_ota_release_zip_archive_remote_signing:
     needs: 'test_ota_release_zip_archive'
+    name: 'Test OTA Release Action (release_type: zip_archive, signing_key_management: remote)'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Set up environment'
+        run: |
+          echo "TIMESTAMP=$(date +'%Y-%m-%dT%H:%M:%S%z')" >> $GITHUB_ENV
+
+      - name: 'Create artifacts for test'
+        run: |
+          mkdir -p artifacts
+          hello_time="$(date +'%Y-%m-%dT%H:%M:%S%z')"
+          echo "${hello_time}: Hello, World!" > artifacts/hello.txt
+          sleep 4.2
+          goodbye_time="$(date +'%Y-%m-%dT%H:%M:%S%z')"
+          echo "${goodbye_time}: Goodbye, World!" > artifacts/goodbye.txt
+
+      - name: 'Test OTA Release'
+        uses: './' # Use an action in the root directory
+        with:
+          release_name: 'archive-release ${{ env.TIMESTAMP }}'
+          release_type: 'zip_archive'
+          zip_archive_dir: 'artifacts'
+          persist_dir_on_device: '/tmp/persist'
+          base_install_path_on_device: '/tmp/ota'
+          project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
+          signing_key_management: 'remote'
+
+  test_ota_release_rootfs:
+    needs: 'test_ota_release_zip_archive_remote_signing'
+    name: 'Test OTA Release Action (release_type: rootfs, signing_key_management: local)'
     runs-on: 'ubuntu-latest'
     steps:
       - name: 'Checkout'
@@ -99,3 +159,29 @@ jobs:
           signing_key_management: 'local'
           signing_key: ${{ secrets.TEST_SIGNING_KEY }}
           signing_key_password: ${{ secrets.TEST_SIGNING_KEY_PASSWORD }}
+
+  test_ota_release_rootfs_remote_signing:
+    needs: 'test_ota_release_rootfs'
+    name: 'Test OTA Release Action (release_type: rootfs, signing_key_management: remote)'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Set up environment'
+        run: |
+          echo "TIMESTAMP=$(date +'%Y-%m-%dT%H:%M:%S%z')" >> $GITHUB_ENV
+
+      - name: 'Create (bogus) rootfs for test'
+        run: |
+          echo "Create fake rootfs at ${{ env.TIMESTAMP }}" > rootfs.img
+
+      - name: 'Test OTA Release'
+        uses: './' # Use an action in the root directory
+        with:
+          release_name: 'rootfs-release ${{ env.TIMESTAMP }}'
+          release_type: 'rootfs'
+          rootfs_img_path: 'rootfs.img'
+          persist_dir_on_device: '/tmp/persist'
+          project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
+          signing_key_management: 'remote'
