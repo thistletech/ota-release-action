@@ -28,15 +28,29 @@ SCRIPT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 TRH_BINARY_PATH="${SCRIPT_DIR}/trh"
 readonly TRH_BINARY_PATH
-TRH_DOWNLOAD_URL="https://downloads.thistle.tech/embedded-client/1.1.0/trh-1.1.0-x86_64-unknown-linux-musl.gz"
+TRH_DOWNLOAD_URL="https://downloads.thistle.tech/embedded-client/1.2.1/trh-1.2.1-x86_64-unknown-linux-musl.gz"
 readonly TRH_DOWNLOAD_URL
 
 # Set environment variables
-export THISTLE_KEY="${HOME}/.minisign/minisign.key"
-export THISTLE_KEY_PASS="${INPUT_SIGNING_KEY_PASSWORD}"
 export THISTLE_TOKEN="${INPUT_PROJECT_ACCESS_TOKEN}"
+
+[ -z "${INPUT_SIGNING_KEY_MANAGEMENT}" ] && err "No signing key management provided"
+[ "${INPUT_SIGNING_KEY_MANAGEMENT}" = "local" ] || [ "${INPUT_SIGNING_KEY_MANAGEMENT}" = "remote" ] || {
+  err "Unknown signing key management: ${INPUT_SIGNING_KEY_MANAGEMENT}"
+}
+
+[ "${INPUT_SIGNING_KEY_MANAGEMENT}" = "local" ] && {
+  export THISTLE_KEY="${HOME}/.minisign/minisign.key"
+  export THISTLE_KEY_PASS="${INPUT_SIGNING_KEY_PASSWORD}"
+}
+
 [ -z "${INPUT_BACKEND_URL}" ] || export THISTLE_BACKEND="${INPUT_BACKEND_URL}"
 
+# Set TRH command based on signing method
+TRH_COMMAND="${TRH_BINARY_PATH} --signing-method=${INPUT_SIGNING_KEY_MANAGEMENT}"
+readonly TRH_COMMAND
+
+# Functions
 err() {
   echo -e "$*"
   exit 1
@@ -54,9 +68,12 @@ get_manifest_template_hack() {
   local persist_dir="${INPUT_PERSIST_DIR_ON_DEVICE:-}"
   [ -z "${persist_dir}" ] && err "No persist directory provided"
 
-  mkdir -p "$(dirname "${THISTLE_KEY}")"
-  echo "${INPUT_SIGNING_KEY}" > "${THISTLE_KEY}"
-  "${TRH_BINARY_PATH}" init --persist="${persist_dir}" > /dev/null
+  if [ "${INPUT_SIGNING_KEY_MANAGEMENT}" = "local" ]; then
+    mkdir -p "$(dirname "${THISTLE_KEY}")"
+    echo "${INPUT_SIGNING_KEY}" > "${THISTLE_KEY}"
+  fi
+
+  eval "${TRH_COMMAND}" init --persist="${persist_dir}" > /dev/null
 }
 
 file_release() {
@@ -70,12 +87,12 @@ file_release() {
   local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
   [ -z "${base_install_path}" ] && err "No base install path provided"
 
-  "${TRH_BINARY_PATH}" prepare --target="${artifacts_dir}" --file-base-path="${base_install_path}"
+  eval "${TRH_COMMAND}" prepare --target="\"${artifacts_dir}\"" --file-base-path="\"${base_install_path}\""
 
   if [ -n "${release_name}" ]; then
-    "${TRH_BINARY_PATH}" release --name="${release_name}"
+    eval "${TRH_COMMAND}" release --name="\"${release_name}\""
   else
-    "${TRH_BINARY_PATH}" release
+    eval "${TRH_COMMAND}" release
   fi 
 
   echo "done"
@@ -89,12 +106,12 @@ rootfs_release() {
   local rootfs_img_path="${INPUT_ROOTFS_IMG_PATH:-}"
   [ -z "${rootfs_img_path}" ] && err "No rootfs image path provided"
 
-  "${TRH_BINARY_PATH}" prepare --target="${rootfs_img_path}"
+  eval "${TRH_COMMAND}" prepare --target="\"${rootfs_img_path}\""
 
   if [ -n "${release_name}" ]; then
-    "${TRH_BINARY_PATH}" release --name="${release_name}"
+    eval "${TRH_COMMAND}" release --name="\"${release_name}\""
   else
-    "${TRH_BINARY_PATH}" release
+    eval "${TRH_COMMAND}" release
   fi
 
   echo "done"
@@ -111,12 +128,12 @@ zip_archive_release() {
   local base_install_path="${INPUT_BASE_INSTALL_PATH_ON_DEVICE:-}"
   [ -z "${base_install_path}" ] && err "No base install path provided"
 
-  "${TRH_BINARY_PATH}" prepare --zip-target --target="${zip_archive_dir}" --file-base-path="${base_install_path}"
+  eval "${TRH_COMMAND}" prepare --zip-target --target="\"${zip_archive_dir}\"" --file-base-path="\"${base_install_path}\""
 
   if [ -n "${release_name}" ]; then
-    "${TRH_BINARY_PATH}" release --name="${release_name}"
+    eval "${TRH_COMMAND}" release --name="\"${release_name}\""
   else
-    "${TRH_BINARY_PATH}" release
+    eval "${TRH_COMMAND}" release
   fi
 
   echo "done"
