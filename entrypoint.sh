@@ -28,7 +28,7 @@ SCRIPT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 TRH_BINARY_PATH="${SCRIPT_DIR}/trh"
 readonly TRH_BINARY_PATH
-TRH_DOWNLOAD_URL="https://downloads.thistle.tech/embedded-client/1.2.1/trh-1.2.1-x86_64-unknown-linux-musl.gz"
+TRH_DOWNLOAD_URL="https://downloads.thistle.tech/embedded-client/1.3.0/trh-1.3.0-x86_64-unknown-linux-musl.gz"
 readonly TRH_DOWNLOAD_URL
 
 # Set environment variables
