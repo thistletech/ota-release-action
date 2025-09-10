@@ -10,7 +10,6 @@
 #
 # INPUT_RELEASE_NAME
 # INPUT_RELEASE_TYPE
-# INPUT_PERSIST_DIR_ON_DEVICE
 # INPUT_ARTIFACTS_DIR
 # INPUT_ROOTFS_IMG_PATH
 # INPUT_ZIP_ARCHIVE_DIR
@@ -28,7 +27,7 @@ SCRIPT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 readonly SCRIPT_DIR
 TRH_BINARY_PATH="${SCRIPT_DIR}/trh"
 readonly TRH_BINARY_PATH
-TRH_DOWNLOAD_URL="https://downloads.thistle.tech/embedded-client/1.3.0/trh-1.3.0-x86_64-unknown-linux-musl.gz"
+TRH_DOWNLOAD_URL="https://downloads.thistle.tech/embedded-client/1.6.0/trh-1.6.0-x86_64-unknown-linux-musl.gz"
 readonly TRH_DOWNLOAD_URL
 
 # Set environment variables
@@ -63,21 +62,18 @@ download_trh() {
   "${TRH_BINARY_PATH}" --version
 }
 
-get_manifest_template_hack() {
-  # Hack alert: Need to do this to get a manifest template
-  local persist_dir="${INPUT_PERSIST_DIR_ON_DEVICE:-}"
-  [ -z "${persist_dir}" ] && err "No persist directory provided"
+get_manifest_template() {
 
   if [ "${INPUT_SIGNING_KEY_MANAGEMENT}" = "local" ]; then
     mkdir -p "$(dirname "${THISTLE_KEY}")"
     echo "${INPUT_SIGNING_KEY}" > "${THISTLE_KEY}"
   fi
 
-  eval "${TRH_COMMAND}" init --persist="${persist_dir}" > /dev/null
+  eval "${TRH_COMMAND}" init > /dev/null
 }
 
 file_release() {
-  get_manifest_template_hack
+  get_manifest_template
 
   local release_name="${INPUT_RELEASE_NAME:-}"
 
@@ -99,7 +95,7 @@ file_release() {
 }
 
 rootfs_release() {
-  get_manifest_template_hack
+  get_manifest_template
 
   local release_name="${INPUT_RELEASE_NAME:-}"
 
@@ -118,7 +114,7 @@ rootfs_release() {
 }
 
 zip_archive_release() {
-  get_manifest_template_hack
+  get_manifest_template
 
   local release_name="${INPUT_RELEASE_NAME:-}"
 
