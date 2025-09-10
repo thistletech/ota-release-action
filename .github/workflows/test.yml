@@ -31,7 +31,6 @@ jobs:
           # Not setting release_name to test the default behavior
           release_type: 'file'
           artifacts_dir: 'artifacts'
-          persist_dir_on_device: '/tmp/persist'
           base_install_path_on_device: '/tmp/ota'
           project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'
@@ -61,7 +60,6 @@ jobs:
           # Not setting release_name to test the default behavior
           release_type: 'file'
           artifacts_dir: 'artifacts'
-          persist_dir_on_device: '/tmp/persist'
           base_install_path_on_device: '/tmp/ota'
           project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'remote'
@@ -93,7 +91,6 @@ jobs:
           release_name: 'archive-release ${{ env.TIMESTAMP }}'
           release_type: 'zip_archive'
           zip_archive_dir: 'artifacts'
-          persist_dir_on_device: '/tmp/persist'
           base_install_path_on_device: '/tmp/ota'
           project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'
@@ -127,7 +124,6 @@ jobs:
           release_name: 'archive-release ${{ env.TIMESTAMP }}'
           release_type: 'zip_archive'
           zip_archive_dir: 'artifacts'
-          persist_dir_on_device: '/tmp/persist'
           base_install_path_on_device: '/tmp/ota'
           project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'remote'
@@ -154,7 +150,6 @@ jobs:
           release_name: 'rootfs-release ${{ env.TIMESTAMP }}'
           release_type: 'rootfs'
           rootfs_img_path: 'rootfs.img'
-          persist_dir_on_device: '/tmp/persist'
           project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'local'
           signing_key: ${{ secrets.TEST_SIGNING_KEY }}
@@ -182,6 +177,5 @@ jobs:
           release_name: 'rootfs-release ${{ env.TIMESTAMP }}'
           release_type: 'rootfs'
           rootfs_img_path: 'rootfs.img'
-          persist_dir_on_device: '/tmp/persist'
           project_access_token: ${{ secrets.TEST_PROJECT_ACCESS_TOKEN }}
           signing_key_management: 'remote'
